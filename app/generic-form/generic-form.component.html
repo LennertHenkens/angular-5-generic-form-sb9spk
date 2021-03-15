@@ -1,0 +1,28 @@
+<form novalidate [formGroup]="myForm">
+
+	<ng-template ngFor let-field [ngForOf]="fields">
+
+		<div *ngIf="field.type == 'control'">
+			<generic-input-row [field]="field" [formGroup]="myForm"></generic-input-row>
+		</div>
+
+		<div *ngIf="field.type == 'group'" [formGroupName]="field.name">
+			<h3>{{field.groupTitle}}</h3>
+			<ng-template ngFor let-control [ngForOf]="field.controls">
+				<generic-input-row [field]="control" [formGroup]="myForm.get(field.name)"></generic-input-row>
+			</ng-template>
+		</div>
+
+		<div *ngIf="field.type == 'array'" [formArrayName]="field.name">
+			<h3>{{field.arrayTitle}}</h3>
+			<ng-template ngFor let-group [ngForOf]="field.groups">
+				{{group.groupTitle}}
+				<div *ngFor="let formGroup of myForm.get(field.name)['controls']; let i = index">
+					<generic-input-row [field]="group.controls[i]" [formGroup]="formGroup"></generic-input-row>
+				</div>
+			</ng-template>
+		</div>
+
+	</ng-template>
+
+</form>
